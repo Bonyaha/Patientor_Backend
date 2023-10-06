@@ -16,3 +16,10 @@ actual data manipulations are in `src/services` directory (it is quite a common 
 };
 Does this part - : DiaryEntry[]  - means that the function getEntries must return an array consisting of objects of DiaryEntry type?
 **A**: The : DiaryEntry[] indicates that the getEntries function is expected to return an array where each element is of type DiaryEntry. In other words, it enforces that the return value of the getEntries function should be an array containing objects that conform to the structure defined by the DiaryEntry interface.
+
+###
+```const isGender = (str: string): str is Gender => {
+	return Object.values(Gender).map(v => v.toString()).includes(str);
+};
+```
+Without mapping step (map(v => v.toString())), TypeScript would raise a type error because it wouldn't allow direct comparison between a string and an enum value. TypeScript treats enum values as distinct types, and without mapping TypeScript doesn't recognize the direct compatibility between a string and an enum value. The mapping ensures that you're comparing apples to apples, so to speak, by working with strings in both cases.
