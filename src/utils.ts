@@ -52,7 +52,7 @@ const parseSsn = (ssn: unknown): string => {
 	if (!isString(ssn)) {
 		throw new Error('Incorrect or missing ssn');
 	}
-	// Use a regular expression to validate SSN format (###-##-####)
+	// Use a regular expression to validate SSN format (######-###)
 	const ssnPattern = /^(\d{6}-?\d{3}[0-9A-Za-z])|(\d{6}-?\d{2}[0-9A-Za-z])$/;
 	if (!ssnPattern.test(ssn)) {
 		throw new Error('Invalid SSN format');
