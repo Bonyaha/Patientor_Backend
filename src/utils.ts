@@ -1,17 +1,19 @@
-import { Gender, NewPatientEntry } from './types';
+import { Gender, NewPatientEntry, /* Entry */ } from './types';
 
 //function that receives the request body as a parameter and returns a properly-typed NewPatientEntry object
 export const toNewPatientEntry = (object: unknown): NewPatientEntry => {
 	if (!object || typeof object !== 'object') {
 		throw new Error('Incorrect or missing data');
 	}
-	if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object) {
+	if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object /* &&
+		'entries' in object */) {
 		const newPatient: NewPatientEntry = {
 			name: parseName(object.name),
 			dateOfBirth: parseDateOfBirth(object.dateOfBirth),
 			ssn: parseSsn(object.ssn),
 			gender: parseGender(object.gender),
-			occupation: parseOccupation(object.occupation)
+			occupation: parseOccupation(object.occupation),
+			//entries: parseEntries(object.entries as unknown[]),
 		};
 		return newPatient;
 	}
@@ -70,6 +72,14 @@ const parseGender = (gender: unknown): Gender => {
 	}
 	return gender;
 };
+
+/* const parseEntries = (entries: unknown[]): Entry[] => {
+	if (!Array.isArray(entries)) {
+		throw new Error('Entries must be an array');
+	}
+	// You can add additional validation or parsing for entries here if needed.
+	return entries as Entry[];
+}; */
 
 
 export default toNewPatientEntry;
