@@ -1,6 +1,8 @@
 import express from 'express';
 import patientsService from '../services/patientsService';
 import toNewPatientEntry from '../utils';
+import { EntryWithoutId } from '../types';
+
 
 const router = express.Router();
 
@@ -37,6 +39,55 @@ router.post('/', (req, res) => {
 	}
 });
 
+router.post('/:id/entries', (req, res) => {
+	const id = req.params.id;
+	const patient = patientsService.getPatientById(id);
+
+	if (!patient) {
+		return res.status(404).json({ error: 'Patient not found' });
+	}
+
+	try {
+		const entryData = req.body as EntryWithoutId;
+
+		// Validate the new entry based on its type
+		switch (entryData.type) {
+			case 'HealthCheck':
+				// Check for required fields for HealthCheckEntry
+				if (!entryData.healthCheckRating) {
+					throw new Error('Required fields for HealthCheckEntry are missing.');
+				}
+				break;
+
+			case 'OccupationalHealthcare':
+				// Check for required fields for OccupationalHealthcareEntry
+				if (!entryData.employerName) {
+					throw new Error('Required fields for OccupationalHealthcareEntry are missing.');
+				}
+				break;
+
+			case 'Hospital':
+				// Check for required fields for HospitalEntry
+				if (!entryData.discharge) {
+					throw new Error('Required fields for HospitalEntry are missing.');
+				}
+				break;
+
+			default:
+				throw new Error('Invalid entry type.');
+		}
+
+		const addedEntry = patientsService.addEntryToPatient(patient, entryData);
+
+		return res.json(addedEntry);
+	} catch (error: unknown) {
+		let errorMessage = 'Something went wrong.';
+		if (error instanceof Error) {
+			errorMessage += ' Error: ' + error.message;
+		}
+		return res.status(400).send(errorMessage);
+	}
+});
 
 
 export default router;
