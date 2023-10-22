@@ -41,6 +41,8 @@ router.post('/', (req, res) => {
 
 router.post('/:id/entries', (req, res) => {
 	const id = req.params.id;
+	console.log(id);
+
 	const patient = patientsService.getPatientById(id);
 
 	if (!patient) {
@@ -49,25 +51,24 @@ router.post('/:id/entries', (req, res) => {
 
 	try {
 		const entryData = req.body as EntryWithoutId;
+		console.log(entryData);
+		console.log(entryData.type === 'HealthCheck' ? entryData.healthCheckRating : 'no');
 
 		// Validate the new entry based on its type
 		switch (entryData.type) {
 			case 'HealthCheck':
-				// Check for required fields for HealthCheckEntry
-				if (!entryData.healthCheckRating) {
+				if (entryData.healthCheckRating === undefined) {
 					throw new Error('Required fields for HealthCheckEntry are missing.');
 				}
 				break;
 
 			case 'OccupationalHealthcare':
-				// Check for required fields for OccupationalHealthcareEntry
 				if (!entryData.employerName) {
 					throw new Error('Required fields for OccupationalHealthcareEntry are missing.');
 				}
 				break;
 
 			case 'Hospital':
-				// Check for required fields for HospitalEntry
 				if (!entryData.discharge) {
 					throw new Error('Required fields for HospitalEntry are missing.');
 				}
