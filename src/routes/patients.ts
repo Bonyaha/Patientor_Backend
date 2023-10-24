@@ -51,9 +51,7 @@ router.post('/:id/entries', (req, res) => {
 
 	try {
 		const entryData = req.body as EntryWithoutId;
-		/* console.log(entryData);
-		console.log(entryData.type === 'HealthCheck' ? entryData.healthCheckRating : 'no');
- */
+
 		// Validate the new entry based on its type
 		switch (entryData.type) {
 			case 'HealthCheck':
